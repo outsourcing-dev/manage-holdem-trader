@@ -17,14 +17,14 @@ class UserModel:
         # 각 사용자에 대해 남은 일수 계산하여 정보 확장
         processed_users = []
         for user in users:
-            user_id, password, expiry_date = user
-            days_left = calculate_days_left(expiry_date)
+            user_id, pw, end_date = user
+            days_left = calculate_days_left(end_date)
             
             processed_users.append({
                 'id': user_id,
-                'password': password,
-                'expiry_date': expiry_date,
-                'expiry_date_str': expiry_date.strftime('%Y-%m-%d'),
+                'password': pw,  # UI와의 호환성을 위해 키는 password로 유지
+                'expiry_date': end_date,  # UI와의 호환성을 위해 키는 expiry_date로 유지
+                'expiry_date_str': end_date.strftime('%Y-%m-%d'),
                 'days_left': days_left,
                 'days_left_str': f"{days_left}일",
                 'status': self._get_status(days_left)

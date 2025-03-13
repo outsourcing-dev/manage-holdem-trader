@@ -25,13 +25,14 @@ class UserManagementWindow(QMainWindow):
         self.setGeometry(*APP_SETTINGS['window_geometry'])
         self.setStyleSheet(APP_STYLE)
         self.setMinimumWidth(900)  # 최소 너비 설정
+        self.setMinimumHeight(700)  # 최소 높이 설정 추가
         
         # 중앙 위젯 설정
         central_widget = QWidget()
         self.setCentralWidget(central_widget)
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setSpacing(15)
-        main_layout.setContentsMargins(10, 10, 10, 10)  # 여백 축소
+        main_layout.setSpacing(10)  # 간격 축소
+        main_layout.setContentsMargins(5, 5, 5, 5)  # 여백 최소화
         
         # 타이틀 레이블
         title_label = QLabel('사용자 관리 시스템')
@@ -49,10 +50,10 @@ class UserManagementWindow(QMainWindow):
         self.button_frame.delete_clicked.connect(self.deleteUser)
         main_layout.addWidget(self.button_frame)
         
-        # 테이블 프레임
+        # 테이블 프레임 - 나머지 공간을 최대한 사용하도록 설정
         self.table_frame = TableFrame()
         self.table_frame.row_clicked.connect(self.tableRowClicked)
-        main_layout.addWidget(self.table_frame)
+        main_layout.addWidget(self.table_frame, 1)  # 스트레치 팩터 1 추가하여 확장되도록 함
     
     def loadUsers(self):
         """사용자 목록 로드"""

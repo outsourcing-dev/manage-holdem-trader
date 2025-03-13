@@ -16,6 +16,7 @@ class DatabaseHandler:
         try:
             self.conn = pymysql.connect(
                 host=DB_CONFIG['host'],
+                port=DB_CONFIG['port'],
                 user=DB_CONFIG['user'],
                 password=DB_CONFIG['password'],
                 db=DB_CONFIG['db'],
@@ -30,10 +31,11 @@ class DatabaseHandler:
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute('''
-                    CREATE TABLE IF NOT EXISTS users (
-                        id VARCHAR(50) PRIMARY KEY,
-                        password VARCHAR(100) NOT NULL,
-                        expiry_date DATE NOT NULL
+                    CREATE TABLE IF NOT EXISTS hol_user (
+                        no INT AUTO_INCREMENT PRIMARY KEY,
+                        id VARCHAR(50) UNIQUE NOT NULL,
+                        pw VARCHAR(100) NOT NULL,
+                        end_date DATE NOT NULL
                     )
                 ''')
                 self.conn.commit()
@@ -45,7 +47,7 @@ class DatabaseHandler:
         """모든 사용자 조회"""
         try:
             with self.conn.cursor() as cursor:
-                cursor.execute('SELECT id, password, expiry_date FROM users')
+                cursor.execute('SELECT id, pw, end_date FROM hol_user')
                 return cursor.fetchall()
         except Exception as e:
             raise Exception(f"사용자 조회 실패: {str(e)}")
@@ -54,7 +56,7 @@ class DatabaseHandler:
         """특정 사용자 조회"""
         try:
             with self.conn.cursor() as cursor:
-                cursor.execute('SELECT id, password, expiry_date FROM users WHERE id = %s', (user_id,))
+                cursor.execute('SELECT id, pw, end_date FROM hol_user WHERE id = %s', (user_id,))
                 return cursor.fetchone()
         except Exception as e:
             raise Exception(f"사용자 조회 실패: {str(e)}")
@@ -63,7 +65,7 @@ class DatabaseHandler:
         """사용자 ID 존재 여부 확인"""
         try:
             with self.conn.cursor() as cursor:
-                cursor.execute('SELECT id FROM users WHERE id = %s', (user_id,))
+                cursor.execute('SELECT id FROM hol_user WHERE id = %s', (user_id,))
                 return cursor.fetchone() is not None
         except Exception as e:
             raise Exception(f"사용자 확인 실패: {str(e)}")
@@ -73,7 +75,7 @@ class DatabaseHandler:
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute(
-                    'INSERT INTO users (id, password, expiry_date) VALUES (%s, %s, %s)',
+                    'INSERT INTO hol_user (id, pw, end_date) VALUES (%s, %s, %s)',
                     (user_id, password, expiry_date)
                 )
                 self.conn.commit()
@@ -86,7 +88,7 @@ class DatabaseHandler:
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute(
-                    'UPDATE users SET password = %s, expiry_date = %s WHERE id = %s',
+                    'UPDATE hol_user SET pw = %s, end_date = %s WHERE id = %s',
                     (password, expiry_date, user_id)
                 )
                 self.conn.commit()
@@ -99,7 +101,7 @@ class DatabaseHandler:
         try:
             with self.conn.cursor() as cursor:
                 cursor.execute(
-                    'UPDATE users SET password = %s WHERE id = %s',
+                    'UPDATE hol_user SET pw = %s WHERE id = %s',
                     (new_password, user_id)
                 )
                 self.conn.commit()
@@ -111,7 +113,7 @@ class DatabaseHandler:
         """사용자 삭제"""
         try:
             with self.conn.cursor() as cursor:
-                cursor.execute('DELETE FROM users WHERE id = %s', (user_id,))
+                cursor.execute('DELETE FROM hol_user WHERE id = %s', (user_id,))
                 self.conn.commit()
             return True
         except Exception as e:

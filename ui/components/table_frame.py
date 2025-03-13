@@ -73,6 +73,8 @@ class TableFrame(QWidget):
         
         # 헤더 스타일 직접 설정
         header = self.user_table.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)  # 이 한 줄만 추가하면 됩니다
+
         header.setStyleSheet(TABLE_HEADER_STYLE)
         
         # 테이블과 헤더 사이의 간격 제거 및 테두리 스타일 맞추기
@@ -95,11 +97,11 @@ class TableFrame(QWidget):
         self.user_table.setIconSize(QSize(16, 16))
         
         # 헤더 설정 - 고정 크기 사용
-        column_widths = TABLE_SETTINGS['column_widths']
-        self.user_table.setColumnWidth(0, column_widths['id'])
-        self.user_table.setColumnWidth(1, column_widths['password'])
-        self.user_table.setColumnWidth(2, column_widths['expiry_date'])
-        self.user_table.setColumnWidth(3, column_widths['days_left'])
+        # column_widths = TABLE_SETTINGS['column_widths']
+        # self.user_table.setColumnWidth(0, column_widths['id'])
+        # self.user_table.setColumnWidth(1, column_widths['password'])
+        # self.user_table.setColumnWidth(2, column_widths['expiry_date'])
+        # self.user_table.setColumnWidth(3, column_widths['days_left'])
         
         # 헤더 텍스트 중앙 정렬
         header.setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -110,6 +112,9 @@ class TableFrame(QWidget):
         # 테이블 행 설정
         self.user_table.setAlternatingRowColors(True)
         self.user_table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        
+        # 테이블 셀 편집 비활성화 (여기가 핵심 부분입니다)
+        self.user_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         
         # 행 번호 표시 설정
         vertical_header = self.user_table.verticalHeader()

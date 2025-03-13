@@ -2,10 +2,11 @@
 
 # 데이터베이스 설정
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',  # XAMPP 기본 비밀번호는 없음
-    'db': 'test_db',
+    'host': 'svc.sel4.cloudtype.app',
+    'port': 32481,
+    'user': 'admin',
+    'password': 'hanapf1121',  # 실제 비밀번호 입력 필요
+    'db': 'manager',  # 사용할 데이터베이스 이름
     'charset': 'utf8mb4'
 }
 
