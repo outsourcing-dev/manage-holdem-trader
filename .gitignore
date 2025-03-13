@@ -1,11 +1,4 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-=======
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -16,7 +9,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
->>>>>>> d82e9e17faaa6a2e6c803445c6f58762da050e74
+
 build/
 develop-eggs/
 dist/
@@ -28,23 +21,7 @@ lib64/
 parts/
 sdist/
 var/
-*.egg-info/
-.installed.cfg
-*.egg
 
-# Virtual Environment
-venv/
-ENV/
-
-# VS Code
-.vscode/
-*.code-workspace
-.history/
-
-# OS specific
-.DS_Store
-Thumbs.db
-=======
 wheels/
 share/python-wheels/
 *.egg-info/
