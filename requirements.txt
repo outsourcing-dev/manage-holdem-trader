@@ -1,2 +1,3 @@
 pymysql
 pyqt6
+pyinstaller
