@@ -87,6 +87,9 @@ class UserManagementWindow(QMainWindow):
             # 테이블 새로고침
             self.loadUsers()
             
+            # 테이블 행 선택 해제
+            self.table_frame.user_table.clearSelection()
+            
         except Exception as e:
             QMessageBox.critical(self, '오류', MESSAGES['db_save_error'].format(error=str(e)))
     
@@ -111,6 +114,12 @@ class UserManagementWindow(QMainWindow):
             
             # 테이블 새로고침
             self.loadUsers()
+            
+            # 테이블 행 선택 해제
+            self.table_frame.user_table.clearSelection()
+            
+            # 입력 필드 초기화
+            self.input_frame.clear_inputs()
             
         except Exception as e:
             QMessageBox.critical(self, '오류', MESSAGES['db_reset_error'].format(error=str(e)))
@@ -142,6 +151,9 @@ class UserManagementWindow(QMainWindow):
                 
                 # 테이블 새로고침
                 self.loadUsers()
+                
+                # 입력 필드 초기화
+                self.input_frame.clear_inputs()
                 
             except Exception as e:
                 QMessageBox.critical(self, '오류', MESSAGES['db_delete_error'].format(error=str(e)))

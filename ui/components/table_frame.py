@@ -96,13 +96,6 @@ class TableFrame(QWidget):
         # 아이콘 크기 설정 - 작게 조정
         self.user_table.setIconSize(QSize(16, 16))
         
-        # 헤더 설정 - 고정 크기 사용
-        # column_widths = TABLE_SETTINGS['column_widths']
-        # self.user_table.setColumnWidth(0, column_widths['id'])
-        # self.user_table.setColumnWidth(1, column_widths['password'])
-        # self.user_table.setColumnWidth(2, column_widths['expiry_date'])
-        # self.user_table.setColumnWidth(3, column_widths['days_left'])
-        
         # 헤더 텍스트 중앙 정렬
         header.setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
         
@@ -137,7 +130,8 @@ class TableFrame(QWidget):
         self.user_table.setGridStyle(Qt.PenStyle.SolidLine)
         self.user_table.setSortingEnabled(True)  # 정렬 기능 활성화
         
-        table_layout.addWidget(self.user_table)
+        table_container_layout.addWidget(self.user_table)
+        table_layout.addWidget(table_container)
     
     def update_table(self, users):
         """사용자 목록 업데이트"""
@@ -196,32 +190,6 @@ class TableFrame(QWidget):
         self.user_table.sortItems(3, Qt.SortOrder.AscendingOrder)
         
         self.user_table.setUpdatesEnabled(True)  # 업데이트 다시 활성화
-    
-    def _apply_status_style(self, item, status):
-        """상태에 따른 스타일 적용"""
-        if status == 'expired':
-            # 만료됨 - 빨간색 배경
-            item.setBackground(Qt.GlobalColor.red)
-            item.setForeground(Qt.GlobalColor.white)  # 흰색 텍스트
-            item.setToolTip(STATUS_SETTINGS['expired']['tooltip'])
-            item.setIcon(self.style().standardIcon(self.style().StandardPixmap.SP_MessageBoxCritical))
-        elif status == 'warning':
-            # 곧 만료 - 노란색 배경
-            item.setBackground(Qt.GlobalColor.yellow)
-            item.setForeground(Qt.GlobalColor.black)  # 검정색 텍스트
-            item.setToolTip(STATUS_SETTINGS['warning']['tooltip'])
-            item.setIcon(self.style().standardIcon(self.style().StandardPixmap.SP_MessageBoxWarning))
-        else:
-            # 정상 - 초록색 배경
-            item.setBackground(Qt.GlobalColor.darkGreen)
-            item.setForeground(Qt.GlobalColor.white)  # 흰색 텍스트
-            item.setIcon(self.style().standardIcon(self.style().StandardPixmap.SP_DialogApplyButton))
-        
-        # 폰트 크기 및 스타일 설정하여 가독성 향상
-        font = item.font()
-        font.setBold(True)
-        font.setPointSize(10)  # 폰트 크기 설정
-        item.setFont(font)
     
     def _handle_click(self):
         """테이블 행 클릭 처리"""
