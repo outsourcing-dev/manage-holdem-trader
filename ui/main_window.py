@@ -9,6 +9,7 @@ from ui.styles import APP_STYLE, TITLE_STYLE
 from ui.components.input_frame import InputFrame
 from ui.components.button_frame import ButtonFrame
 from ui.components.table_frame import TableFrame
+from ui.components.search_frame import SearchFrame  # 검색 프레임 추가
 
 class UserManagementWindow(QMainWindow):
     """사용자 관리 프로그램 메인 윈도우"""
@@ -50,6 +51,11 @@ class UserManagementWindow(QMainWindow):
         self.button_frame.delete_clicked.connect(self.deleteUser)
         main_layout.addWidget(self.button_frame)
         
+        # 검색 프레임 추가
+        self.search_frame = SearchFrame()
+        self.search_frame.search_triggered.connect(self.searchUsers)
+        main_layout.addWidget(self.search_frame)
+        
         # 테이블 프레임 - 나머지 공간을 최대한 사용하도록 설정
         self.table_frame = TableFrame()
         self.table_frame.row_clicked.connect(self.tableRowClicked)
@@ -62,6 +68,13 @@ class UserManagementWindow(QMainWindow):
             self.table_frame.update_table(users)
         except Exception as e:
             QMessageBox.critical(self, '오류', MESSAGES['db_load_error'].format(error=str(e)))
+    
+    def searchUsers(self, search_text, search_type):
+        """사용자 검색"""
+        try:
+            self.table_frame.search_users(search_text, search_type)
+        except Exception as e:
+            QMessageBox.critical(self, '검색 오류', f"검색 중 오류가 발생했습니다: {str(e)}")
 
     def saveUser(self):
         """사용자 저장"""
@@ -98,11 +111,7 @@ class UserManagementWindow(QMainWindow):
 
     def tableRowClicked(self, row):
         """테이블 행 클릭 이벤트 처리"""
-        user_id = self.table_frame.user_table.item(row, 0).text()
-        name = self.table_frame.user_table.item(row, 1).text()
-        phone = self.table_frame.user_table.item(row, 2).text()
-        referrer = self.table_frame.user_table.item(row, 3).text()
-        expiry_date_str = self.table_frame.user_table.item(row, 5).text()
+        user_id = self.table_frame.user_table.item(row, 1).text()  # ID는 두 번째 컬럼(인덱스 1)
         
         try:
             user = self.user_model.db.get_user(user_id)
@@ -110,14 +119,14 @@ class UserManagementWindow(QMainWindow):
                 self.input_frame.set_user_info(
                     user_id=user[0],
                     password=user[1],
-                    expiry_date_str=expiry_date_str,
+                    expiry_date_str=user[2].strftime('%Y-%m-%d'),
                     name=user[3] if user[3] else '',
                     phone=user[4] if user[4] else '',
                     referrer=user[5] if user[5] else ''
                 )
         except Exception as e:
             QMessageBox.critical(self, '오류', MESSAGES['db_password_error'].format(error=str(e)))
-            
+                
     def resetPassword(self):
         """비밀번호 초기화"""
         user_id = self.table_frame.get_selected_user_id()
