@@ -17,7 +17,7 @@ class UserModel:
         # 각 사용자에 대해 남은 일수 계산하여 정보 확장
         processed_users = []
         for user in users:
-            user_id, pw, end_date = user
+            user_id, pw, end_date, name, phone, referrer = user
             days_left = calculate_days_left(end_date)
             
             processed_users.append({
@@ -27,21 +27,24 @@ class UserModel:
                 'expiry_date_str': end_date.strftime('%Y-%m-%d'),
                 'days_left': days_left,
                 'days_left_str': f"{days_left}일",
-                'status': self._get_status(days_left)
+                'status': self._get_status(days_left),
+                'name': name if name else '',
+                'phone': phone if phone else '',
+                'referrer': referrer if referrer else ''
             })
         
         return processed_users
     
-    def save_user(self, user_id, password, expiry_date):
+    def save_user(self, user_id, password, expiry_date, name='', phone='', referrer=''):
         """사용자 저장 (추가 또는 업데이트)"""
         if not user_id or not password:
             raise ValueError("아이디와 비밀번호는 필수 입력값입니다.")
         
         if self.db.user_exists(user_id):
-            self.db.update_user(user_id, password, expiry_date)
+            self.db.update_user(user_id, password, expiry_date, name, phone, referrer)
             return {'success': True, 'is_new': False}
         else:
-            self.db.add_user(user_id, password, expiry_date)
+            self.db.add_user(user_id, password, expiry_date, name, phone, referrer)
             return {'success': True, 'is_new': True}
     
     def reset_password(self, user_id):

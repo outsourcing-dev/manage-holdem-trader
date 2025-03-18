@@ -13,19 +13,22 @@ DB_CONFIG = {
 # 애플리케이션 설정
 APP_SETTINGS = {
     'window_title': '사용자 관리 프로그램',
-    'window_geometry': (100, 100, 900, 900),
+    'window_geometry': (100, 100, 1100, 900),  # 가로 길이 증가
     'default_expiry_days': 30,  # 기본 사용 기간 (일)
 }
 
 # 테이블 설정
 TABLE_SETTINGS = {
     'column_widths': {
-        'id': 150,
-        'password': 200,
-        'expiry_date': 150,
-        'days_left': 150
+        'id': 120,
+        'name': 100,
+        'phone': 120,
+        'referrer': 100,
+        'password': 120,
+        'expiry_date': 120,
+        'days_left': 100
     },
-    'headers': ['ID', '비밀번호', '사용 기간', '남은 일수']
+    'headers': ['ID', '이름', '전화번호', '추천인', '비밀번호', '사용 기간', '남은 일수']
 }
 
 # 알림 메시지

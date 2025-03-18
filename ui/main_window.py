@@ -62,7 +62,7 @@ class UserManagementWindow(QMainWindow):
             self.table_frame.update_table(users)
         except Exception as e:
             QMessageBox.critical(self, '오류', MESSAGES['db_load_error'].format(error=str(e)))
-    
+
     def saveUser(self):
         """사용자 저장"""
         user_input = self.input_frame.get_user_input()
@@ -75,7 +75,10 @@ class UserManagementWindow(QMainWindow):
             result = self.user_model.save_user(
                 user_input['user_id'], 
                 user_input['password'], 
-                user_input['expiry_date']
+                user_input['expiry_date'],
+                user_input['name'],
+                user_input['phone'],
+                user_input['referrer']
             )
             
             message = MESSAGES['user_added'] if result['is_new'] else MESSAGES['user_updated']
@@ -92,7 +95,29 @@ class UserManagementWindow(QMainWindow):
             
         except Exception as e:
             QMessageBox.critical(self, '오류', MESSAGES['db_save_error'].format(error=str(e)))
-    
+
+    def tableRowClicked(self, row):
+        """테이블 행 클릭 이벤트 처리"""
+        user_id = self.table_frame.user_table.item(row, 0).text()
+        name = self.table_frame.user_table.item(row, 1).text()
+        phone = self.table_frame.user_table.item(row, 2).text()
+        referrer = self.table_frame.user_table.item(row, 3).text()
+        expiry_date_str = self.table_frame.user_table.item(row, 5).text()
+        
+        try:
+            user = self.user_model.db.get_user(user_id)
+            if user:
+                self.input_frame.set_user_info(
+                    user_id=user[0],
+                    password=user[1],
+                    expiry_date_str=expiry_date_str,
+                    name=user[3] if user[3] else '',
+                    phone=user[4] if user[4] else '',
+                    referrer=user[5] if user[5] else ''
+                )
+        except Exception as e:
+            QMessageBox.critical(self, '오류', MESSAGES['db_password_error'].format(error=str(e)))
+            
     def resetPassword(self):
         """비밀번호 초기화"""
         user_id = self.table_frame.get_selected_user_id()
@@ -157,22 +182,6 @@ class UserManagementWindow(QMainWindow):
                 
             except Exception as e:
                 QMessageBox.critical(self, '오류', MESSAGES['db_delete_error'].format(error=str(e)))
-    
-    def tableRowClicked(self, row):
-        """테이블 행 클릭 이벤트 처리"""
-        user_id = self.table_frame.user_table.item(row, 0).text()
-        expiry_date_str = self.table_frame.user_table.item(row, 2).text()
-        
-        try:
-            user = self.user_model.db.get_user(user_id)
-            if user:
-                self.input_frame.set_user_info(
-                    user_id=user[0],
-                    password=user[1],
-                    expiry_date_str=expiry_date_str
-                )
-        except Exception as e:
-            QMessageBox.critical(self, '오류', MESSAGES['db_password_error'].format(error=str(e)))
     
     def closeEvent(self, event):
         """프로그램 종료 시 리소스 정리"""
