@@ -23,11 +23,11 @@ class InputFrame(QWidget):
         main_layout.setSpacing(15)
         main_layout.setContentsMargins(10, 10, 10, 10)
         
-        # 정보 입력 타이틀
-        input_title = QLabel("사용자 정보 입력")
-        input_title.setStyleSheet(INPUT_TITLE_STYLE)
-        input_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        main_layout.addWidget(input_title)
+        # # 정보 입력 타이틀
+        # input_title = QLabel("사용자 정보 입력")
+        # input_title.setStyleSheet(INPUT_TITLE_STYLE)
+        # input_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # main_layout.addWidget(input_title)
         
         # 그리드 레이아웃 사용 - 2행 3열 구조
         grid_layout = QGridLayout()
@@ -36,8 +36,9 @@ class InputFrame(QWidget):
         # 1행: ID, 이름, 전화번호
         # ID 입력
         id_label = QLabel('아이디')
-        id_label.setStyleSheet(INPUT_LABEL_STYLE)
+        id_label.setStyleSheet("background-color: #e6f2ff; border-radius: 4px; padding: 5px; font-weight: bold; color: #333; border: 1px solid #cce0ff;")
         id_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        id_label.setFixedHeight(30)  # 레이블 높이 고정
         
         self.id_input = QLineEdit()
         self.id_input.setPlaceholderText('사용자 ID 입력')
@@ -50,8 +51,9 @@ class InputFrame(QWidget):
         
         # 이름 입력
         name_label = QLabel('이름')
-        name_label.setStyleSheet(INPUT_LABEL_STYLE)
+        name_label.setStyleSheet("background-color: #e6f2ff; border-radius: 4px; padding: 5px; font-weight: bold; color: #333; border: 1px solid #cce0ff;")
         name_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        name_label.setFixedHeight(30)  # 레이블 높이 고정
         
         self.name_input = QLineEdit()
         self.name_input.setPlaceholderText('이름 입력')
@@ -64,8 +66,9 @@ class InputFrame(QWidget):
         
         # 전화번호 입력
         phone_label = QLabel('전화번호')
-        phone_label.setStyleSheet(INPUT_LABEL_STYLE)
+        phone_label.setStyleSheet("background-color: #e6f2ff; border-radius: 4px; padding: 5px; font-weight: bold; color: #333; border: 1px solid #cce0ff;")
         phone_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        phone_label.setFixedHeight(30)  # 레이블 높이 고정
         
         self.phone_input = QLineEdit()
         self.phone_input.setPlaceholderText('전화번호 입력')
@@ -79,8 +82,9 @@ class InputFrame(QWidget):
         # 2행: 비밀번호, 추천인, 사용기간
         # 비밀번호 입력
         pw_label = QLabel('비밀번호')
-        pw_label.setStyleSheet(INPUT_LABEL_STYLE)
+        pw_label.setStyleSheet("background-color: #e6f2ff; border-radius: 4px; padding: 5px; font-weight: bold; color: #333; border: 1px solid #cce0ff;")
         pw_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        pw_label.setFixedHeight(30)  # 레이블 높이 고정
         
         self.password_input = QLineEdit()
         self.password_input.setPlaceholderText('비밀번호 입력')
@@ -93,8 +97,9 @@ class InputFrame(QWidget):
         
         # 추천인 입력
         referrer_label = QLabel('추천인')
-        referrer_label.setStyleSheet(INPUT_LABEL_STYLE)
+        referrer_label.setStyleSheet("background-color: #e6f2ff; border-radius: 4px; padding: 5px; font-weight: bold; color: #333; border: 1px solid #cce0ff;")
         referrer_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        referrer_label.setFixedHeight(30)  # 레이블 높이 고정
         
         self.referrer_input = QLineEdit()
         self.referrer_input.setPlaceholderText('추천인 입력')
@@ -107,8 +112,9 @@ class InputFrame(QWidget):
         
         # 사용 기간 입력
         expiry_label = QLabel('사용 기간 (종료일)')
-        expiry_label.setStyleSheet(INPUT_LABEL_STYLE)
+        expiry_label.setStyleSheet("background-color: #e6f2ff; border-radius: 4px; padding: 5px; font-weight: bold; color: #333; border: 1px solid #cce0ff;")
         expiry_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        expiry_label.setFixedHeight(30)  # 레이블 높이 고정
         
         self.expiry_input = QDateEdit()
         self.expiry_input.setCalendarPopup(True)

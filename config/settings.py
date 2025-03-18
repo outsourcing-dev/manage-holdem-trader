@@ -22,10 +22,10 @@ TABLE_SETTINGS = {
     'column_widths': {
         'id': 120,
         'name': 100,
-        'phone': 120,
+        'phone': 290,
         'referrer': 100,
         'password': 120,
-        'expiry_date': 120,
+        'expiry_date': 150,
         'days_left': 100
     },
     'headers': ['ID', '이름', '전화번호', '추천인', '비밀번호', '사용 기간', '남은 일수']

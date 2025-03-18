@@ -65,37 +65,43 @@ class TableFrame(QWidget):
         
         # 테이블 위젯 설정
         self.user_table = QTableWidget()
-        self.user_table.setColumnCount(7)  # 7개 컬럼으로 증가
-        self.user_table.setHorizontalHeaderLabels(TABLE_SETTINGS['headers'])
+        
+        # 컬럼 수 설정 - 번호 컬럼도 포함하여 8개로 증가
+        self.user_table.setColumnCount(8)
+        
+        # 모든 헤더 레이블 설정 - 번호 컬럼 추가
+        header_labels = ['NO'] + TABLE_SETTINGS['headers']
+        self.user_table.setHorizontalHeaderLabels(header_labels)
         
         # 테이블 전체 스타일
         self.user_table.setStyleSheet(TABLE_STYLE)
         
         # 헤더 스타일 직접 설정
         header = self.user_table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)  # 기본 설정은 stretch
-
-        # 컬럼 너비 설정 (고정 너비)
-        for idx, col_name in enumerate(['id', 'name', 'phone', 'referrer', 'password', 'expiry_date', 'days_left']):
+        
+        # 모든 컬럼을 Stretch로 설정 (기본 설정)
+        for i in range(self.user_table.columnCount()):
+            header.setSectionResizeMode(i, QHeaderView.ResizeMode.Stretch)
+            
+        # 번호 컬럼 너비 고정
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        self.user_table.setColumnWidth(0, 60)  # 번호 컬럼 너비를 60으로 고정
+        
+        # 컬럼 너비 설정 (고정 너비가 있는 경우만 Interactive로 설정) - 인덱스 조정
+        column_names = ['id', 'name', 'phone', 'referrer', 'password', 'expiry_date', 'days_left']
+        for idx, col_name in enumerate(column_names):
             if col_name in TABLE_SETTINGS['column_widths']:
                 width = TABLE_SETTINGS['column_widths'][col_name]
-                self.user_table.setColumnWidth(idx, width)
-                header.setSectionResizeMode(idx, QHeaderView.ResizeMode.Interactive)
+                self.user_table.setColumnWidth(idx + 1, width)  # +1 for NO column
+                header.setSectionResizeMode(idx + 1, QHeaderView.ResizeMode.Interactive)
+        
+        # 마지막 컬럼(days_left)는 stretch 모드로 설정하여 남은 공간을 활용
+        header.setSectionResizeMode(7, QHeaderView.ResizeMode.Stretch)  # 7 = 인덱스 조정
         
         header.setStyleSheet(TABLE_HEADER_STYLE)
         
-        # 수직 헤더도 스타일 적용 (행 번호 표시)
-        vertical_header = self.user_table.verticalHeader()
-        vertical_header.setStyleSheet("""
-            QHeaderView::section {
-                background-color: #0078d7;
-                color: white;
-                border: none;
-                font-weight: bold;
-                padding: 5px;
-                min-width: 25px;
-            }
-        """)
+        # 수직 헤더 숨기기 (행 번호를 직접 첫 번째 컬럼에 표시할 것이므로)
+        self.user_table.verticalHeader().setVisible(False)
         
         # 아이콘 크기 설정 - 작게 조정
         self.user_table.setIconSize(QSize(16, 16))
@@ -113,20 +119,6 @@ class TableFrame(QWidget):
         # 테이블 셀 편집 비활성화
         self.user_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         
-        # 행 번호 표시 설정
-        vertical_header = self.user_table.verticalHeader()
-        vertical_header.setVisible(True)  # 행 번호 표시
-        vertical_header.setDefaultSectionSize(45)  # 행 높이와 동일하게 설정
-        vertical_header.setStyleSheet("""
-            QHeaderView::section {
-                background-color: #0078d7;
-                color: white;
-                border: none;
-                padding: 5px;
-                font-weight: bold;
-            }
-        """)
-        
         self.user_table.clicked.connect(self._handle_click)
         
         # 테이블 기본 설정
@@ -142,6 +134,15 @@ class TableFrame(QWidget):
         selected_row = self.user_table.currentRow()
         if selected_row >= 0:
             self.row_clicked.emit(selected_row)
+    
+    def get_selected_user_id(self):
+        """선택된 사용자 ID 반환"""
+        selected_items = self.user_table.selectedItems()
+        if selected_items:
+            row = selected_items[0].row()
+            # ID는 이제 두 번째 컬럼(인덱스 1)에 있음
+            return self.user_table.item(row, 1).text()
+        return None
             
     def update_table(self, users):
         """사용자 목록 업데이트"""
@@ -154,35 +155,40 @@ class TableFrame(QWidget):
         # 테이블 업데이트
         self.user_table.setRowCount(len(users))
         for row, user in enumerate(users):
-            # ID 항목 생성
+            # 번호 컬럼 추가 (1부터 시작)
+            no_item = QTableWidgetItem(str(row + 1))
+            no_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.user_table.setItem(row, 0, no_item)
+            
+            # ID 항목 생성 (1번 컬럼으로 이동)
             id_item = QTableWidgetItem(user['id'])
             id_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.user_table.setItem(row, 0, id_item)
+            self.user_table.setItem(row, 1, id_item)
             
             # 이름 항목 생성
             name_item = QTableWidgetItem(user['name'])
             name_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.user_table.setItem(row, 1, name_item)
+            self.user_table.setItem(row, 2, name_item)
             
             # 전화번호 항목 생성
             phone_item = QTableWidgetItem(user['phone'])
             phone_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.user_table.setItem(row, 2, phone_item)
+            self.user_table.setItem(row, 3, phone_item)
             
             # 추천인 항목 생성
             referrer_item = QTableWidgetItem(user['referrer'])
             referrer_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.user_table.setItem(row, 3, referrer_item)
+            self.user_table.setItem(row, 4, referrer_item)
             
             # 비밀번호 항목 생성
             pw_item = QTableWidgetItem(user['password'])
             pw_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.user_table.setItem(row, 4, pw_item)
+            self.user_table.setItem(row, 5, pw_item)
             
             # 만료일 항목 생성
             expiry_item = QTableWidgetItem(user['expiry_date_str'])
             expiry_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.user_table.setItem(row, 5, expiry_item)
+            self.user_table.setItem(row, 6, expiry_item)
             
             # 남은 일수 항목 생성
             days_left = user['days_left']
@@ -206,12 +212,12 @@ class TableFrame(QWidget):
                 days_item.setForeground(Qt.GlobalColor.darkGreen)
                 days_item.setIcon(self.style().standardIcon(self.style().StandardPixmap.SP_DialogApplyButton))
             
-            self.user_table.setItem(row, 6, days_item)
+            self.user_table.setItem(row, 7, days_item)
             
             # 행 높이 설정
             self.user_table.setRowHeight(row, 30)
         
         # 테이블 정렬 - 기본적으로 만료일 임박순(남은 일수 적은 순)으로 정렬
-        self.user_table.sortItems(6, Qt.SortOrder.AscendingOrder)
+        self.user_table.sortItems(7, Qt.SortOrder.AscendingOrder)  # 7로 인덱스 조정
         
         self.user_table.setUpdatesEnabled(True)  # 업데이트 다시 활성화
