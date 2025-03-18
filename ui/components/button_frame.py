@@ -11,7 +11,8 @@ class ButtonFrame(QWidget):
     save_clicked = pyqtSignal()
     reset_clicked = pyqtSignal()
     delete_clicked = pyqtSignal()
-    
+    force_logout_clicked = pyqtSignal()  # 새로운 시그널 추가
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.initUI()
@@ -47,3 +48,23 @@ class ButtonFrame(QWidget):
         self.delete_button.setStyleSheet('background-color: #d9534f;')
         self.delete_button.clicked.connect(self.delete_clicked.emit)
         button_layout.addWidget(self.delete_button)
+        
+        self.force_logout_button = QPushButton('강제 로그아웃')
+        self.force_logout_button.setMinimumHeight(50)
+        self.force_logout_button.setFixedWidth(120)
+        # button_frame.py에서 스타일시트 수정
+        self.force_logout_button.setStyleSheet("""
+            QPushButton {
+                background-color: #FF6B6B;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                font-weight: bold;
+                border-radius: 2px;
+            }
+            QPushButton:hover {
+                background-color: #FF5252;
+            }
+        """)
+        self.force_logout_button.clicked.connect(self.force_logout_clicked.emit)
+        button_layout.addWidget(self.force_logout_button)

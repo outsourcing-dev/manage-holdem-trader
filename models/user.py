@@ -74,3 +74,46 @@ class UserModel:
         """리소스 정리"""
         if self.db:
             self.db.close()
+    
+    def admin_reset_login_status(self, user_id=None):
+        """
+        관리자용 로그인 상태 초기화 함수
+        
+        Args:
+            user_id (str, optional): 초기화할 특정 사용자 ID (None이면 모든 사용자)
+        
+        Returns:
+            tuple: (성공 여부, 처리된 사용자 수)
+        """
+        try:
+            # conn으로 변경
+            cursor = self.db.conn.cursor()
+            
+            try:
+                if user_id:
+                    # 특정 사용자 로그인 상태 초기화
+                    cursor.execute(
+                        'UPDATE hol_user SET logged_in = 0 WHERE id = %s',
+                        (user_id,)
+                    )
+                else:
+                    # 모든 사용자 로그인 상태 초기화
+                    cursor.execute('UPDATE hol_user SET logged_in = 0')
+                
+                affected_rows = cursor.rowcount
+                self.db.conn.commit()  # conn으로 변경
+                
+                return True, affected_rows
+            
+            except Exception as e:
+                self.db.conn.rollback()  # conn으로 변경
+                print(f"로그인 상태 초기화 오류: {e}")
+                return False, 0
+            
+            finally:
+                cursor.close()
+        
+        except Exception as e:
+            print(f"데이터베이스 연결 오류: {e}")
+            return False, 0
+        
